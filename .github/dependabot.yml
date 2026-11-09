@@ -1,0 +1,25 @@
+# Keeps dependencies up to date with weekly pull requests, each of which runs the full CI.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # Minor and patch updates together, so they arrive as one pull request a week.
+      minor-and-patch:
+        update-types: [minor, patch]
+    labels: [dependencies]
+    ignore:
+      # sigma 4 made the whole-library graph several times slower than sigma 3 at 20,000 notes
+      # (docs/PERFORMANCE.md, "Whole-library graph"); stay on 3 until that is fixed upstream.
+      - dependency-name: sigma
+        versions: ['>=4']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencies]
